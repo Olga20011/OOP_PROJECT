@@ -6,11 +6,22 @@ include_once('lib' . DIRECTORY_SEPARATOR . 'job.php');
 
 <?php 
 $job = new Job;
+
 $template = new Template('./lib/templates/frontpage.php');
 
-$template->title = 'Latest Jobs';
+$category = isset($_GET['category']) ? $_GET['category'] : null;
 
-$template->jobs = $job->getAllJobs();
+if($category){
+    $template->jobs = $job->getByCategory($category);
+
+
+}else{
+    $template->title = 'Latest Jobs';
+    $template->jobs = $job->getAllJobs();
+
+}
+
+$template ->categories = $job->getCategories();
 
 echo $template;
 

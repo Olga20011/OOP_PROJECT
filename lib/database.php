@@ -48,7 +48,7 @@ class Database{
     }
     public function resultSet(){
         $this->execute();
-        return $this->stmt->get_result()->fetch_object();
+        return $this->stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
     public function single(){
         $this->execute();
