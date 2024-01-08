@@ -8,11 +8,13 @@ include_once('lib' . DIRECTORY_SEPARATOR . 'job.php');
 $job = new Job;
 
 $template = new Template('./lib/templates/frontpage.php');
+ 
 
 $category = isset($_GET['category']) ? $_GET['category'] : null;
 
 if($category){
     $template->jobs = $job->getByCategory($category);
+    $template->title = 'Jobs In '. $job->getCategory($category)->name;
 
 
 }else{

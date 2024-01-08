@@ -23,26 +23,38 @@ class Database{
     }
 
     // binding values
-    public function bind($param , $value , $type = null){
+   // Inside Database class
+   public function bind($params = array()) {
+    $types = ''; // Initialize $types here
+    $bindParams = array();
 
-        if(is_null($type)){
-            switch (true) {
-                case is_int($value):
-                    $type .= 'i' ;
-                    break;
-                case is_bool($value):
-                    $type .= 'b' ;
-                    break;
-                case is_null($value):
-                    $type .= 'n' ;
-                    break;
-                default:
-                    $type .= 's' ;
-            }
+    foreach ($params as $param) {
+        if (is_int($param)) {
+            $types .= 'i'; // Integer type
+        } elseif (is_float($param)) {
+            $types .= 'd'; // Double type
+        } elseif (is_string($param)) {
+            $types .= 's'; // String type
+        } else {
+            $types .= 'b'; // Blob type
         }
-        $this->stmt->bindValue($param ,$value, $type);
 
+        $bindParams[] = $param;
     }
+
+    // Dynamically bind parameters
+    $bindArgs = array_merge(array($types), $bindParams);
+    call_user_func_array(array($this->stmt, 'bind_param'), $this->refValues($bindArgs));
+}
+// Add this helper method to handle references for bind_param
+private function refValues($arr){
+    $refs = array();
+    foreach ($arr as $key => $value) {
+        $refs[$key] = &$arr[$key];
+    }
+    return $refs;
+}
+
     public function execute(){
         return $this->stmt->execute();
     }
